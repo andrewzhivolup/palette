@@ -1,5 +1,10 @@
 const cols = document.querySelectorAll('.col')
 
+/**
+* Обработчик события нажатия клавиши на клавиатуре.
+* При нажатии клавиши пробела вызывает функцию установки случайных цветов.
+* @param {KeyboardEvent} event - объект события нажатия клавиши.
+*/
 document.addEventListener('keydown', (event) => {
     event.preventDefault()
     if (event.code.toLowerCase() === 'space') {
@@ -7,6 +12,13 @@ document.addEventListener('keydown', (event) => {
     }
 })
 
+/**
+* Обработчик события клика мышью.
+* В зависимости от типа данных целевого элемента, вызывает соответствующие функции:
+* * переключение состояния блокировки цвета
+* * копирование цвета в буфер обмена
+@param {MouseEvent} event - объект события клика мышью.
+*/
 document.addEventListener('click', (event) => {
     const type = event.target.dataset.type
     if (type === 'lock') {
@@ -22,10 +34,18 @@ document.addEventListener('click', (event) => {
     }
 })
 
+/**
+* Копирует указанный текст в буфер обмена.
+* @param {string} text - Текст, который нужно скопировать в буфер обмена.
+*/
 function copyToClickboard(text) {
     return navigator.clipboard.writeText(text)
 }
 
+/**
+* Устанавливает случайные цвета для элементов списка.
+* @param {boolean} isInitial - флаг, указывающий на то, что цвета устанавливаются впервые.
+*/
 function setRandomColors(isInitial) {
     const colors = isInitial ? getColorsFromHash() : []
 
@@ -59,11 +79,20 @@ function setRandomColors(isInitial) {
     updateColorsHash(colors)
 }
 
+/**
+* Устанавливает цвет текста элемента в зависимости от освещенности указанного цвета.
+* @param {HTMLElement} text - Элемент, у которого нужно изменить цвет текста.
+* @param {string} color - Цвет, освещенность которого нужно учитывать при выборе цвета текста.
+*/
 function setTextColor(text, color) {
     const luminance = chroma(color).luminance()
     text.style.color = luminance > 0.5 ? 'black' : 'white'
 }
 
+/**
+* Обновляет хэш URL указанными цветами.
+* @param {string[]} [colors=[]] - Массив шестнадцатеричных кодов цветов для обновления хэша URL.
+*/
 function updateColorsHash(colors = []) {
     document.location.hash = colors
         .map((col) => {
@@ -72,6 +101,10 @@ function updateColorsHash(colors = []) {
         .join('-')
 }
 
+/**
+* Извлекает цвета из текущего URL хэша и возвращает их в виде массива строк.
+* @returns {string[]} Массив строк с шестнадцатеричными кодами цветов.
+*/
 function getColorsFromHash() {
     if (document.location.hash.length > 1) {
         return document.location.hash
